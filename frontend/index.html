@@ -1,0 +1,47 @@
+
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <title>Cloud Run + Cloud SQL Demo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+  <header>
+    <h1>Cloud Run × Cloud SQL (Postgres) – Demo</h1>
+    <p class="muted">간단 업로드 & 조회 실습</p>
+  </header>
+
+  <section>
+    <h2>Holdings 업로드</h2>
+    <div class="row">
+      <input id="ticker" placeholder="티커 (예: AAPL)" />
+      <input id="company" placeholder="회사명" />
+      <input id="weight" placeholder="비중 (%) 예: 1.2345" />
+      <input id="sector" placeholder="섹터" />
+      <button id="btnUpload">저장</button>
+    </div>
+    <p class="muted">※ 쓰기 요청은 서버의 Basic Auth(환경변수 UPLOAD_USER/UPLOAD_PASS)로 보호됩니다.</p>
+  </section>
+
+  <section>
+    <h2>최근 Holdings</h2>
+    <button id="btnLoad">새로고침</button>
+    <table>
+      <thead>
+        <tr><th>티커</th><th>회사명</th><th>비중</th><th>섹터</th><th>등록 시각</th></tr>
+      </thead>
+      <tbody id="tblBody">
+        <tr><td colspan="5" class="muted">데이터 없음</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <footer>
+    <div>© Demo</div>
+  </footer>
+
+  <script src="./main.js"></script>
+</body>
+</html>

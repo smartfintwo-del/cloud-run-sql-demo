@@ -1,0 +1,85 @@
+
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<title>Workshop Slides - Cloud Run × Cloud SQL</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+body { font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif; margin:0; }
+section { padding: 60px 80px; border-bottom: 1px solid #eee; }
+h1,h2 { margin: 0 0 16px 0; }
+code, pre { background:#0f172a; color:#e2e8f0; padding: 2px 6px; border-radius:6px; }
+pre { padding:12px; overflow:auto; }
+.small { color:#64748b; }
+ul { line-height: 1.8; }
+</style>
+</head>
+<body>
+
+<section>
+  <h1>Cloud Run × Cloud SQL (Postgres) 실습</h1>
+  <p class="small">Node.js 백엔드 + 초간단 프론트엔드</p>
+</section>
+
+<section>
+  <h2>목표</h2>
+  <ul>
+    <li>Cloud SQL(Postgres) 인스턴스 준비</li>
+    <li>Node.js 앱이 Cloud SQL에 연결 (Unix 소켓 / TCP)</li>
+    <li>Cloud Run에 배포하고 환경변수로 DB 접속 정보 설정</li>
+    <li>프론트에서 간단 입력 → DB 저장/조회</li>
+  </ul>
+</section>
+
+<section>
+  <h2>DB 스키마</h2>
+  <pre><code>CREATE EXTENSION IF NOT EXISTS "pgcrypto";
+CREATE TABLE IF NOT EXISTS upload_history (...);
+CREATE TABLE IF NOT EXISTS holdings (...);</code></pre>
+  <p class="small">자세한 내용은 <code>backend/database/schema.sql</code> 참고</p>
+</section>
+
+<section>
+  <h2>중요 포인트</h2>
+  <ul>
+    <li>Cloud Run → <strong>Connections</strong> 탭에서 Cloud SQL 인스턴스 추가</li>
+    <li>환경변수: <code>CLOUD_SQL_CONNECTION_NAME</code>, <code>DB_USER</code>, <code>DB_PASSWORD</code>, <code>DB_NAME</code></li>
+    <li>서비스 계정에 <strong>Cloud SQL Client</strong> 역할</li>
+    <li>컨테이너는 <code>0.0.0.0:8080</code> 리스닝</li>
+  </ul>
+</section>
+
+<section>
+  <h2>보안(선택)</h2>
+  <ul>
+    <li>쓰기 요청은 Basic Auth로 보호</li>
+    <li>Cloud Run 변수로 <code>UPLOAD_USER</code>/<code>UPLOAD_PASS</code> 설정</li>
+  </ul>
+</section>
+
+<section>
+  <h2>데모 흐름</h2>
+  <ol>
+    <li>입력(티커/회사/비중/섹터) → <strong>저장</strong></li>
+    <li>백엔드: <code>POST /api/holdings</code> → DB INSERT</li>
+    <li>프론트: <strong>새로고침</strong> → <code>GET /api/holdings</code> 목록 표시</li>
+  </ol>
+</section>
+
+<section>
+  <h2>트러블슈팅</h2>
+  <ul>
+    <li>ECONNREFUSED 127.0.0.1 → 소켓 경로/연결 추가/환경변수 확인</li>
+    <li>권한 문제 → 서비스 계정 역할 재확인</li>
+    <li>헬스 체크 실패 → 포트/리스닝/Startup probe</li>
+  </ul>
+</section>
+
+<section>
+  <h2>끝!</h2>
+  <p>질문 환영 🙌</p>
+</section>
+
+</body>
+</html>
