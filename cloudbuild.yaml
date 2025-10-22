@@ -1,0 +1,29 @@
+# cloudbuild.yaml
+# Artifact Registry를 쓰는 예시입니다. (gcr도 동일 패턴)
+substitutions:
+  _REGION: asia-northeast1
+  _REPO: cloud-sqldemo-repo
+  _IMAGE:  cloud-sqldemo-img
+  # 이미지 경로 예시(Artifact Registry):
+  # ${_REGION}-docker.pkg.dev/$PROJECT_ID/${_REPO}/${_IMAGE}
+steps:
+  - name: 'gcr.io/cloud-builders/docker'
+    args:
+      - 'build'
+      - '-t'
+      - '${_REGION}-docker.pkg.dev/$PROJECT_ID/${_REPO}/${_IMAGE}:${COMMIT_SHA}'
+      - '-t'
+      - '${_REGION}-docker.pkg.dev/$PROJECT_ID/${_REPO}/${_IMAGE}:latest'
+      - '.'
+
+  - name: 'gcr.io/cloud-builders/docker'
+    args:
+      - 'push'
+      - '${_REGION}-docker.pkg.dev/$PROJECT_ID/${_REPO}/${_IMAGE}:${COMMIT_SHA}'
+
+  - name: 'gcr.io/cloud-builders/docker'
+    args:
+      - 'push'
+      - '${_REGION}-docker.pkg.dev/$PROJECT_ID/${_REPO}/${_IMAGE}:latest'
+options:
+  logging: CLOUD_LOGGING_ONLY
